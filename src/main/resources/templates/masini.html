@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Masini</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+
+</head>
+<body>
+<!-- Navigation bar (header) -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/}">Home</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid text-center">
+    <div class="m-2" style="margin-top: 70px;">
+        <h2>Manage Masini</h2></div>
+    <div class="m-2 ">
+        <div sec:authorize="hasRole('ADMIN')">
+            <a class="h3" th:href="@{/masini/new}">Add New Car</a>
+            <div th:if="${message}" class="alert alert-success text-center">
+                [[${message}]]
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="text-center" style="margin-top: 20px;display: flex; justify-content:center; font-size:20px;">
+        <table class="table-bordered " style="align:center">
+            <thead class="thead-dark">
+            <tr>
+                <th>Nr inmatriculare</th>
+                <th>Id utilizator</th>
+                <th>Marca</th>
+                <th>Model</th>
+                <th>Culoare</th>
+                <th>Anul fabricatiei</th>
+                <th>Capacitatea cilindrica</th>
+                <th>Tipul de combustibil</th>
+                <th>Puterea</th>
+                <th>Cuplul</th>
+                <th>Volumul portbagajului</th>
+                <th>Pretul</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Check if the filtered list is present -->
+            <th:block th:if="${masiniFiltrate}">
+                <th:block th:each="masina: ${masiniFiltrate}">
+                    <tr>
+                        <td>[[${masina.nr_inmatriculare}]]</td>
+                        <td>[[${masina.id_utilizator}]]</td>
+                        <td>[[${masina.marca}]]</td>
+                        <td>[[${masina.model}]]</td>
+                        <td>[[${masina.culoare}]]</td>
+                        <td>[[${masina.anul_fabricatiei}]]</td>
+                        <td>[[${masina.capacitate_cilindrica}]]</td>
+                        <td>[[${masina.tipul_de_combustibil}]]</td>
+                        <td>[[${masina.putere}]]</td>
+                        <td>[[${masina.cuplul}]]</td>
+                        <td>[[${masina.volumul_portbagajului}]]</td>
+                        <td>[[${masina.pretul}]]</td>
+                        <td>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a class="h4 mr-3" th:href="@{'/masini/edit/'+${masina.nr_inmatriculare}}">Edit</a>
+                                <a class="h4" th:href="@{'/masini/delete/'+${masina.nr_inmatriculare}}">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                </th:block>
+            </th:block>
+            <!-- If the filtered list is not present, show the complete list -->
+            <th:block th:unless="${masiniFiltrate}">
+                <th:block th:each="masina: ${masiniList}">
+                    <tr>
+                        <td>[[${masina.nr_inmatriculare}]]</td>
+                        <td>[[${masina.id_utilizator}]]</td>
+                        <td>[[${masina.marca}]]</td>
+                        <td>[[${masina.model}]]</td>
+                        <td>[[${masina.culoare}]]</td>
+                        <td>[[${masina.anul_fabricatiei}]]</td>
+                        <td>[[${masina.capacitate_cilindrica}]]</td>
+                        <td>[[${masina.tipul_de_combustibil}]]</td>
+                        <td>[[${masina.putere}]]</td>
+                        <td>[[${masina.cuplul}]]</td>
+                        <td>[[${masina.volumul_portbagajului}]]</td>
+                        <td>[[${masina.pretul}]]</td>
+                        <td>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a class="h4 mr-3" th:href="@{'/masini/edit/'+${masina.nr_inmatriculare}}">Edit</a>
+                                <a class="h4" th:href="@{'/masini/delete/'+${masina.nr_inmatriculare}}">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                </th:block>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Filter Form -->
+    <form th:action="@{/masini/filtrate}" method="get" class="form-inline text-center">
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="model" class="sr-only">Model</label>
+            <input type="text" class="form-control" id="model" name="model" placeholder="Model">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="culoare" class="sr-only">Color</label>
+            <input type="text" class="form-control" id="culoare" name="culoare" placeholder="Culoare">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="tipul_de_combustibil" class="sr-only">Fuel Type</label>
+            <input type="text" class="form-control" id="tipul_de_combustibil" name="tipul_de_combustibil" placeholder="Tip combustibil">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Filter</button>
+    </form>
+</div>
+
+</body>
+
+</html>
